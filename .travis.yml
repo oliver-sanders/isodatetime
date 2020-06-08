@@ -53,17 +53,19 @@ script:
   - |
     if "$RUN_COVERAGE"; then
       PY_CMD="coverage run"
+      N_PROC="-n 4"
       export COVERAGE_PROCESS_START="${TRAVIS_BUILD_DIR}/.coveragerc"
       export COVERAGE_FILE="${TRAVIS_BUILD_DIR}/.coverage"
     else
       PY_CMD="python"
+      N_PROC=""
     fi
     # NOTE: the way to handle long-living commands in the documentation is
     # travis_wait 40 coverage run -m isodatetime.tests.test_time_point
     # but it does not produce any output, which can be frustrating in case of errors.
     # So here we are using the approach documented in the issue
     # https://github.com/travis-ci/travis-ci/issues/4190.
-    $PY_CMD setup.py test --pytest-args='--runslow -n 4' &
+    $PY_CMD setup.py test --pytest-args="--runslow $N_PROC" &
     TEST_PID="$!"
     minutes=0
     limit=50
